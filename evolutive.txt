@@ -1,0 +1,9 @@
+1) Aggiornare il servizio facendo ritornare null se, nel metodo createUser,
+non esiste un utente con l'email fornita in ingresso.
+Nel controller aggiornare il valore di ritorno con NOT_FOUND nel caso precedente.
+
+2) Nel controller e relativo servizio, aggiornare i metodi getAllUsers per accettare
+i parametri "orderBy" e "limit".
+- orderBy -> accetta i valori email, name, surname e le opzioni asc/desc
+  e ordina i risultati in baso ai parametri inserito
+- limit accetta un intero e permette di limitare il numero di utenti restituiti dall'API
