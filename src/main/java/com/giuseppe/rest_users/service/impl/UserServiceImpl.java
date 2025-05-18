@@ -5,19 +5,42 @@ import com.giuseppe.rest_users.service.api.IUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-/**
- * Implementazione dell'interfaccia di servizio per la gestione degli utenti
- * */
 @Service
 public class UserServiceImpl implements IUserService {
 
     private final List<User> users = new ArrayList<>();
 
     @Override
-    public List<User> getAllUsers() {
-        return new ArrayList<>(this.users);
+    public List<User> getAllUsers(String orderBy, Integer limit) {
+        List<User> result = new ArrayList<>(this.users);
+
+        if (orderBy != null) {
+            boolean descending = orderBy.endsWith("_desc");
+            String field = descending ? orderBy.substring(0, orderBy.length() - 5) :
+                    (orderBy.endsWith("_asc") ? orderBy.substring(0, orderBy.length() - 4) : orderBy);
+
+            Comparator<User> comparator = switch (field) {
+                case "email" -> Comparator.comparing(User::email);
+                case "name" -> Comparator.comparing(User::name);
+                case "surname" -> Comparator.comparing(User::surname);
+                default -> (a, b) -> 0;
+            };
+
+            if (descending) {
+                comparator = comparator.reversed();
+            }
+
+            result.sort(comparator);
+        }
+
+        if (limit != null && limit > 0 && limit < result.size()) {
+            result = result.subList(0, limit);
+        }
+
+        return result;
     }
 
     @Override
@@ -30,7 +53,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User createUser(User user) {
-        // TODO check if email already exists -> return null
+        boolean emailExists = this.users.stream()
+                .anyMatch(u -> u.email().equals(user.email()));
+        if (emailExists) {
+            return null;
+        }
         this.users.add(user);
         return user;
     }
