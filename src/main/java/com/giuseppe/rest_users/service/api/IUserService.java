@@ -10,11 +10,13 @@ import java.util.List;
 public interface IUserService {
 
     /**
-     * Restituisce tutti gli utenti.
+     * Restituisce tutti gli utenti con opzioni di ordinamento e limite.
      *
-     * @return Una lista di utenti
+     * @param orderBy campo per l'ordinamento (email, name, surname) con suffisso _asc/_desc
+     * @param limit numero massimo di utenti da restituire (null per nessun limite)
+     * @return Una lista di utenti ordinata e limitata
      */
-    List<User> getAllUsers();
+    List<User> getAllUsers(String orderBy, Integer limit);
 
     /**
      * Restituisce un utente dato il suo indirizzo email.
@@ -28,7 +30,7 @@ public interface IUserService {
      * Crea un nuovo utente.
      *
      * @param user l'utente da creare
-     * @return l'utente creato o null se esiste
+     * @return l'utente creato o null se esiste già un utente con la stessa email
      */
     User createUser(User user);
 
