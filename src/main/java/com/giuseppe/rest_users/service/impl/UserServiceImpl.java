@@ -18,9 +18,19 @@ public class UserServiceImpl implements IUserService {
         List<User> result = new ArrayList<>(this.users);
 
         if (orderBy != null) {
-            boolean descending = orderBy.endsWith("_desc");
-            String field = descending ? orderBy.substring(0, orderBy.length() - 5) :
-                    (orderBy.endsWith("_asc") ? orderBy.substring(0, orderBy.length() - 4) : orderBy);
+            String field;
+            boolean descending;
+
+            if (orderBy.endsWith("_desc")) {
+                field = orderBy.substring(0, orderBy.length() - 5);
+                descending = true;
+            } else if (orderBy.endsWith("_asc")) {
+                field = orderBy.substring(0, orderBy.length() - 4);
+                descending = false;
+            } else {
+                field = orderBy;
+                descending = false;
+            }
 
             Comparator<User> comparator = switch (field) {
                 case "email" -> Comparator.comparing(User::email);
